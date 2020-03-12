@@ -6,65 +6,119 @@
 
 //TODO TESTEAR MUCHISIMO Y LEERLA BIEN BIEN
 
-Crane::Crane()
+Crane::Crane(byte xAxisPin, byte yAxisPin) : PIN_X_AXIS(xAxisPin), PIN_Y_AXIS(yAxisPin)
 {
 	XyzEngine::init();
 	currStateStartTime = millis();
 }
 
-void Crane::update()
+bool Crane::update()
 {
 	switch(currState){
 		case S_RESTING:
-			//Do nothing
+			return false;
 			break;
 		case S_PLAYING:
 			updatePlaying();
-			break;
+			return false;
 		case S_CATCHING_PRIZE:
-			updateCatchingPrize();
-			break;
+			return updateCatchingPrize();
+		case S_DROPING_PRIZE:
+			return updateDropingPrize();
 		case S_RETRIEVING:
-			updateRetrieving();
-			break;
+			return updateRetrieving();
 	}
 }
 
+void Crane::updateCurrVelocities()
+{
+	int xAxis = analogRead(PIN_X_AXIS);
+	//if(android.xVelocity != 0){
+		//
+	//}
+	int yAxis = analogRead(PIN_Y_AXIS);
+	//if(android.yVelocity != 0){
+		//
+	//}
+	
+	if(xAxis < 256){
+		currXVelocity = -1;
+	}
+	else if(xAxis > 768){
+		currXVelocity = 1;
+	}
+	else{
+		currXVelocity = 0;
+	}
+
+	if(yAxis > 768){
+		currYVelocity = -1;
+	}
+	else if(yAxis < 256){
+		currYVelocity = 1;
+	}
+	else{
+		currYVelocity = 0;
+	}
+}
+
+//Asumimos que velocidad solo puede ser -1, 0, 1
 void Crane::updatePlaying()
 {
-	if (lastXVelocity != 0){
-		xTime += lastXVelocity * (millis() - lastUpdated);//todo revisar bien que da este resultado el usar unsigned long, char y long talvez da comportamientos extrannos
-	}
-	if (lastYVelocity != 0){
-		yTime += lastYVelocity * (millis() - lastUpdated);
-	}
-	
-	if(xTime >= MAX_X_TIME || xTime <= 0){
-		lastXVelocity = 0;
-		currXVelocity = 0;
-	}
-	if(yTime >= MAX_Y_TIME || yTime <= 0){
-		lastXVelocity = 0;
-		currXVelocity = 0;
-	}
-	
 	lastXVelocity = currXVelocity;
 	lastYVelocity = currYVelocity;
+	updateCurrVelocities();
 	
-	if(lastXVelocity < 0){
+	if(currStateStartTime == 0xffffffff){
+		currStateStartTime = millis();
+	}
+	
+	if (lastXVelocity > 0){
+		xTime += (millis() - lastUpdated);//todo revisar bien que da este resultado el usar unsigned long, char y long talvez da comportamientos extrannos
+		if(xTime >= MAX_X_TIME){
+			currXVelocity = 0;
+			xTime = MAX_X_TIME;
+		}
+	}
+	else if (lastXVelocity < 0){
+		unsigned long lastXTime = xTime;
+		xTime -= (millis() - lastUpdated);//todo revisar bien que da este resultado el usar unsigned long, char y long talvez da comportamientos extrannos
+		if(xTime > lastXTime || xTime == 0){//Chequeamos underflow, algo chapuceado seria mejor . Talvez existan maneras mas idiomaticas de hacerlo pero por ahora sirive
+			currXVelocity = 0;
+			xTime = 0;
+		}
+	}
+	
+	if (lastYVelocity > 0){
+		yTime += (millis() - lastUpdated);//todo revisar bien que da este resultado el usar unsigned long, char y long talvez da comportamientos eytrannos
+		if(yTime > MAX_Y_TIME){
+			currYVelocity = 0;
+			yTime = MAX_Y_TIME;
+		}
+	}
+	else if (lastYVelocity < 0){
+		unsigned long lastYTime = yTime;
+		yTime -= (millis() - lastUpdated);//todo revisar bien que da este resultado el usar unsigned long, char y long talvez da comportamientos eytrannos
+		if(yTime > lastYTime){//Chequeamos underflow, algo chapuceado seria mejor . Talvez eyistan maneras mas idiomaticas de hacerlo pero por ahora sirive
+			currYVelocity = 0;
+			yTime = 0;
+		}
+	}
+	
+	if(currXVelocity < 0 && xTime != 0){//va a mover el motor a donde dice currXVel si y solo si y solo si tiene espacio disponible
 		XyzEngine::xReverse();
 	}
-	else if(lastXVelocity > 0){
+	else if(currXVelocity > 0 && xTime != MAX_X_TIME){//va a mover el motor a donde dice currXVel si y solo si tiene espacio disponible
 		XyzEngine::xFoward();
 	}
 	else{
 		XyzEngine::xStop();
 	}
 	
-	if(lastXVelocity < 0){
+	if(currYVelocity < 0 && yTime != 0){//va a mover el motor a donde dice currYVel si y solo si y solo si tiene espacio disponible
 		XyzEngine::yReverse();
 	}
-	else if(lastXVelocity > 0){
+	else if(currYVelocity > 0 && yTime != MAX_Y_TIME){//va a mover el motor a donde dice currYVel si y solo si y solo si tiene espacio disponible
 		XyzEngine::yFoward();
 	}
 	else{
@@ -74,8 +128,13 @@ void Crane::updatePlaying()
 	lastUpdated = millis();
 }
 
-void Crane::updateCatchingPrize()
+bool Crane::updateCatchingPrize()
 {
+	if(currStateStartTime == 0xffffffff){
+		currStateStartTime = millis();
+		isDone = false;
+	}
+	
 	if(millis() - currStateStartTime < LOWERING_TIME)
 	{
 		XyzEngine::zFoward();
@@ -87,26 +146,65 @@ void Crane::updateCatchingPrize()
 	else
 	{
 		XyzEngine::zStop();
-		currState = S_RESTING;
+		isDone = true;
 	}
+	
+	return isDone;
 }
 
-void Crane::updateRetrieving()
+bool Crane::updateDropingPrize()
 {
-	bool shouldRetrieveX = millis() - currStateStartTime - 100 < xTime;//CONSTANTES (100) QUEMADA
-	bool shouldRetrieveY = millis() - currStateStartTime - 100 < yTime;
+	if(currStateStartTime == 0xffffffff){
+		currStateStartTime = millis();
+		isDone = false;
+	}
+	
+	if(millis() - currStateStartTime < DROPING_TIME)
+	{
+		XyzEngine::zFoward();
+	}
+	else if (millis() - currStateStartTime < DROPING_TIME * 2)//CONSTANTE QUEMADA
+	{
+		XyzEngine::zReverse();
+	}
+	else
+	{
+		XyzEngine::zStop();
+		isDone = true;
+	}
+	return isDone;
+}
+
+bool Crane::updateRetrieving()
+{
+	if(currStateStartTime == 0xffffffff){//Chapuz?
+		currStateStartTime = millis();
+		isDone = false;
+	}
+	
+	bool shouldRetrieveX = (millis() - currStateStartTime - 100) < xTime;//CONSTANTES (100) QUEMADA
+	bool shouldRetrieveY = (millis() - currStateStartTime - 100) < yTime;
 	
 	if(shouldRetrieveX){
 		XyzEngine::xReverse();	
 	}
+	else{
+		XyzEngine::xStop();
+	}
 	if(shouldRetrieveY){
 		XyzEngine::yReverse();
 	}
+	else{
+		XyzEngine::yStop();
+	}
+	
 	if(!shouldRetrieveX && !shouldRetrieveY){
 		xTime = 0;
 		yTime = 0;
-		currState = S_RESTING;
+		isDone = true;
 	}
+	
+	return isDone;
 }
 
 void Crane::setState(byte state)//Esta algo chapuceado, revisar el flujo 
@@ -114,14 +212,20 @@ void Crane::setState(byte state)//Esta algo chapuceado, revisar el flujo
 	if(state != S_RESTING &&
 		state != S_PLAYING &&
 		state != S_RETRIEVING &&
-		state != S_CATCHING_PRIZE)
-	if(currState == S_CATCHING_PRIZE || currState == S_RETRIEVING)//NO PODEMOS SALIRNOS DE UN ESTADO AUTOMATICO DESDE AFUERA DE LA CLASE
+		state != S_CATCHING_PRIZE && 
+		state != S_DROPING_PRIZE)
+	{
+		Serial.println("Estado no valido");
+		return;
+	}
+		
+	if((currState == S_CATCHING_PRIZE || currState == S_RETRIEVING || currState == S_DROPING_PRIZE) && !isDone)//NO PODEMOS SALIRNOS DE UN ESTADO AUTOMATICO DESDE AFUERA DE LA CLASE
 	{
 		Serial.println("No se puede de cambiar de estado mientras esta corriendo un estado automatico");//Solo para debugging
 		return;
 	}
 	
-	if (currState == state)
+	if (currState == state)//Deberiamos de actualizar el estado actual aqui tambien?
 		return;
 	
 	//Para poder detener la garra en estado playing sin perder info de cuanto tiempo se estubo moviendo en cierta direccion tenemos que:
@@ -142,19 +246,22 @@ void Crane::setState(byte state)//Esta algo chapuceado, revisar el flujo
 		break;
 		case S_PLAYING :
 			currState = S_PLAYING;
-			currStateStartTime = millis();
-			lastUpdated = millis();
-			updatePlaying();
+			isDone = false;
+			currStateStartTime = 0xffffffff;
 		break;
 		case S_RETRIEVING :
 			currState = S_RETRIEVING;
-			currStateStartTime = millis();
-			updateRetrieving();
+			isDone = false;
+			currStateStartTime = 0xffffffff;
 		break;
 		case S_CATCHING_PRIZE:
 			currState = S_CATCHING_PRIZE;
-			currStateStartTime = millis();
-			updateRetrieving();
+			isDone = false;
+			currStateStartTime = 0xffffffff;
+		break;
+		case S_DROPING_PRIZE:
+			currState = S_DROPING_PRIZE;
+			currStateStartTime = 0xffffffff;
 		break;
 		default:
 			Serial.println("!!! state no valido");//Solo para debugging
@@ -191,17 +298,17 @@ void Crane::setYVelocity(char yVelocity)
 
 byte Crane::getXPos()
 {
-	return (byte) map(xTime, 0, MAX_X_TIME, 0, 8);//Constante quemada
+	return (byte) map(xTime, 0, MAX_X_TIME, 0, 7);//Constante quemada
 }
 
 byte Crane::getYPos()
 {
-	return (byte) map(yTime, 0, MAX_Y_TIME, 0, 8);//Constante quemada
+	return (byte) map(yTime, 0, MAX_Y_TIME, 0, 7);//Constante quemada
 }
 
 bool Crane::hasPrize()
 {	
-	return false;//TODO poner un sensor que determine si tiene o no juguete
+	return true;//TODO poner un sensor que determine si tiene o no juguete
 }
 
 char Crane::getXVelocity()

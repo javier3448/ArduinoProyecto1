@@ -49,6 +49,8 @@ void LedMatrix::paintDot(byte x, byte y)
 	if(x >= 8 || y >= SIZEOF_MATRIX)
 		return;
 	
+	y = SIZEOF_MATRIX - y - 1;
+	
 	matrix[y] |= (1 << x);
 	update();
 }
@@ -57,6 +59,8 @@ void LedMatrix::clearDot(byte x, byte y)
 {
 	if(x >= 8 || y >= SIZEOF_MATRIX)
 		return;
+	
+	y = SIZEOF_MATRIX - y - 1;
 	
 	matrix[y] &= ~(1 << x);
 	update();

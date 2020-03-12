@@ -19,6 +19,7 @@
 #define ARDUINO_ARCH_AVR
 //
 //
+void updateCatchAndDrop();
 
 #include "pins_arduino.h" 
 #include "arduino.h"

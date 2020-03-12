@@ -1,3 +1,6 @@
+#include <Servo.h>
+#include "Slide.h"
+#include "Game.h"
 #include "Crane.h"
 #include "LedMatrix.h"
 /*
@@ -12,61 +15,44 @@ LedMatrix ledMatrix = LedMatrix();
 byte x = 0;
 byte y = 0;
 
+Game game = Game();
+
+const byte PIN_X_AXIS = A0;
+const byte PIN_Y_AXIS = A1;
+const byte PIN_CATH_BTN = 23;
+const byte PIN_DROP_BTN = 24;
+
 void setup()
 {
 	Serial.begin(9600);
-	Serial.println("");
-	//ledMatrix.clear();
-	//ledMatrix.update();
-	//ledMatrix.drawDot(1, 1);
-	ledMatrix.clear();
-	ledMatrix.paintSadFace();
+	Serial.print("try start ");
+	Serial.println(game.tryStart());
 	
-	pinMode(22, OUTPUT);
-	delay(500);
-	tone(22, 32, 1000);
+	pinMode(PIN_CATH_BTN, INPUT_PULLUP);
+	pinMode(PIN_DROP_BTN, INPUT_PULLUP);
 }
 
-unsigned long lastUpdated = millis();
-byte d0 = 0xaa;
-byte d1 = 0x55;
+bool wasCatchPressed = false;
+bool isCatchPressed = false;
 
-bool toggle = false;
+bool wasDropPressed = false;
+bool isDropPressed = false;
+
 void loop()
 {
-	if(millis() - lastUpdated > 200){
-		//d0 = ~d0;
-		//d1 = ~d1;
-		//ledMatrix.matrix[0] = d0;
-		//ledMatrix.matrix[1] = d1;
-		//ledMatrix.matrix[2] = d0;
-		//ledMatrix.matrix[3] = d1;
-		//ledMatrix.matrix[4] = d0;
-		//ledMatrix.matrix[5] = d1;
-		//ledMatrix.matrix[6] = d0;
-		//ledMatrix.matrix[7] = d1;
-		
-		if(toggle){
-			ledMatrix.paintDot(x, y);
-		}
-		else{
-			ledMatrix.clearDot(x, y);
-		}
-		x++;
-		if(x >= 8){
-			x = 0;
-			y++;
-		}
-		if(y > 8){
-			y = 0;
-			toggle = !toggle;
-		}
-		
-		Serial.print("x axis: ");
-		Serial.println(map(analogRead(A0), 0, 1024, -100, 100));
-		Serial.print("y axis: ");
-		Serial.println(map(analogRead(A1), 0, 1024, -100, 100));
-		lastUpdated = millis();
-	}
+	updateCatchAndDrop();
+	bool drop = !wasDropPressed && isDropPressed /*|| android.getInput*/;
+	bool _catch = !wasCatchPressed && isCatchPressed /*|| android.getInput*/;
+	
+	game.update(_catch, drop);
+	Serial.print("catch: " );
+	Serial.println(_catch);
+}
+
+void updateCatchAndDrop(){
+	wasCatchPressed = isCatchPressed;
+	wasDropPressed = isDropPressed;
+	isCatchPressed = !digitalRead(PIN_CATH_BTN);
+	isDropPressed = !digitalRead(PIN_DROP_BTN);
 }
 
