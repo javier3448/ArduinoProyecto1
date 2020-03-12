@@ -25,11 +25,11 @@ const byte PIN_DROP_BTN = 24;
 void setup()
 {
 	Serial.begin(9600);
-	Serial.print("try start ");
-	Serial.println(game.tryStart());
-	
-	pinMode(PIN_CATH_BTN, INPUT_PULLUP);
-	pinMode(PIN_DROP_BTN, INPUT_PULLUP);
+	//Serial.print("try start ");
+	//Serial.println(game.tryStart());
+	//
+	//pinMode(PIN_CATH_BTN, INPUT_PULLUP);
+	//pinMode(PIN_DROP_BTN, INPUT_PULLUP);
 }
 
 bool wasCatchPressed = false;
@@ -40,13 +40,15 @@ bool isDropPressed = false;
 
 void loop()
 {
-	updateCatchAndDrop();
-	bool drop = !wasDropPressed && isDropPressed /*|| android.getInput*/;
-	bool _catch = !wasCatchPressed && isCatchPressed /*|| android.getInput*/;
+	//updateCatchAndDrop();
+	//bool drop = !wasDropPressed && isDropPressed /*|| android.getInput*/;
+	//bool _catch = !wasCatchPressed && isCatchPressed /*|| android.getInput*/;
+	//
+	//game.update(_catch, drop);
+	//Serial.print("catch: " );
+	//Serial.println(_catch);
 	
-	game.update(_catch, drop);
-	Serial.print("catch: " );
-	Serial.println(_catch);
+	
 }
 
 void updateCatchAndDrop(){

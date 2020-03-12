@@ -4,11 +4,13 @@
 
 #include "Slide.h"
 
-Slide::Slide(byte hasPrizePin, byte doorPin)
+Slide::Slide(byte hasPrizeEchoPin, byte hasPrizeTriggerPin, byte doorPin)
 {
 	this->hasPrizePin = hasPrizePin;
 	pinMode(hasPrizePin, INPUT);
 	servo = Servo();
+	servo.attach(doorPin);
+	usSensor = UsSensor(hasPrizeTriggerPin, hasPrizeEchoPin);
 	pinMode(doorPin, OUTPUT);
 	servo.attach(doorPin);
 }
@@ -18,12 +20,7 @@ void Slide::update()
 	hadPrize = hasPrize;
 	
 	//hasPrize = digitalRead(hasPrizePin);//DESCONECTAR Y ARMAR SENSOR DE HASPRIZE
-	hasPrize = false;
-	
-	Serial.print("        hadPrize: ");
-	Serial.println(hadPrize);
-	Serial.print("        hasPrize: ");
-	Serial.println(hasPrize);
+	hasPrize = usSensor.getDistance() < HAS_PRIZE_DISTANCE;
 }
 
 byte Slide::getHasPrize()

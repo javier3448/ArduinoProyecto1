@@ -32,7 +32,7 @@ void Game::printCraneData()
 	Serial.println((int)crane.currYVelocity);
 }
 
-Game::Game() : slide(PIN_HAS_PRIZE_SLIDE, PIN_DOOR), crane(A0, A1)
+Game::Game() : slide(PIN_HAS_PRIZE_SLIDE_E, PIN_HAS_PRIZE_SLIDE_T, PIN_DOOR), crane(A0, A1, PIN_HAS_PRIZE_CRANE)
 {
 	pinMode(PIN_BUZZER, OUTPUT);
 }

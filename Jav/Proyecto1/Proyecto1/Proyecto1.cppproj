@@ -263,6 +263,12 @@
     <Compile Include="Slide.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="UsSensor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UsSensor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="XyzEngine.cpp">
       <SubType>compile</SubType>
     </Compile>

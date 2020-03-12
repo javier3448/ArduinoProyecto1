@@ -62,8 +62,9 @@ class Crane
  
 	const byte PIN_X_AXIS;
 	const byte PIN_Y_AXIS;
+	const byte PIN_HAS_PRIZE;
  
-	Crane(byte xAxisPin, byte yAxisPin);
+	Crane(byte xAxisPin, byte yAxisPin, byte hasPrizePin);
 	
 	bool update();//Retorna si el estado que se esta ejecuntando actualmente ha terminado, sirve principalmente para los estados automaticos con un duracion de tiempo previamente establecida
 	

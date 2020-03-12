@@ -51,7 +51,9 @@ public:
 
 	static const byte PIN_BUZZER = 22;//los pines lo deberiamos de enviar como parametro al construir el objeto, porque esto es una clase y en principio deberian de poder existir varias instancias todas con pines diferentes
 	static const byte PIN_DOOR = 8;//Probar porque la vez pasada parecia no funcionar el puente h en este pin
-	static const byte PIN_HAS_PRIZE_SLIDE = 25;
+	static const byte PIN_HAS_PRIZE_SLIDE_E = 25;
+	static const byte PIN_HAS_PRIZE_SLIDE_T = 26;
+	static const byte PIN_HAS_PRIZE_CRANE = 27;
 
 	Game();
 	

@@ -6,10 +6,11 @@
 
 //TODO TESTEAR MUCHISIMO Y LEERLA BIEN BIEN
 
-Crane::Crane(byte xAxisPin, byte yAxisPin) : PIN_X_AXIS(xAxisPin), PIN_Y_AXIS(yAxisPin)
+Crane::Crane(byte xAxisPin, byte yAxisPin, byte hasPrizePin) : PIN_X_AXIS(xAxisPin), PIN_Y_AXIS(yAxisPin) : PIN_HAS_PRIZE(hasPrizePin)
 {
 	XyzEngine::init();
 	currStateStartTime = millis();
+	pinMode(PIN_HAS_PRIZE, INPUT);
 }
 
 bool Crane::update()
@@ -182,8 +183,18 @@ bool Crane::updateRetrieving()
 		isDone = false;
 	}
 	
-	bool shouldRetrieveX = (millis() - currStateStartTime - 100) < xTime;//CONSTANTES (100) QUEMADA
-	bool shouldRetrieveY = (millis() - currStateStartTime - 100) < yTime;
+	bool shouldRetrieveX = millis() - currStateStartTime < xTime + 100;//CONSTANTES (100) QUEMADA
+	bool shouldRetrieveY = millis() - currStateStartTime < yTime + 100;
+	
+	Serial.print("            xTime: ");
+	Serial.println(xTime);
+	Serial.print("            yTime: ");
+	Serial.println(yTime);
+	
+	Serial.print("        shouldRetriveX: ");
+	Serial.println(shouldRetrieveX);
+	Serial.print("        shouldRetriveY: ");
+	Serial.println(shouldRetrieveY);
 	
 	if(shouldRetrieveX){
 		XyzEngine::xReverse();	
@@ -308,7 +319,7 @@ byte Crane::getYPos()
 
 bool Crane::hasPrize()
 {	
-	return true;//TODO poner un sensor que determine si tiene o no juguete
+	return digitalRead(PIN_HAS_PRIZE);//TODO poner un sensor que determine si tiene o no juguete
 }
 
 char Crane::getXVelocity()
