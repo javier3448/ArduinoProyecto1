@@ -6,11 +6,8 @@
 
 Slide::Slide(byte hasPrizeEchoPin, byte hasPrizeTriggerPin, byte doorPin) : usSensor(hasPrizeTriggerPin, hasPrizeEchoPin)
 {
-	servo = Servo();
 	this->servoPin = doorPin;
-	servo.attach(doorPin);
 	doorOpen = false;
-	servo.write(100);
 }
 
 void Slide::update()
@@ -19,16 +16,6 @@ void Slide::update()
 	
 	//hasPrize = digitalRead(hasPrizePin);//DESCONECTAR Y ARMAR SENSOR DE HASPRIZE
 	hasPrize = usSensor.getDistance() < HAS_PRIZE_DISTANCE;
-}
-
-void Slide::updateServo()
-{
-	if(doorOpen){
-		servo.write(0);
-	}
-	else{
-		servo.write(135);
-	}
 }
 
 byte Slide::getHasPrize()
@@ -45,18 +32,29 @@ void Slide::open()
 {
 	Serial.println("SE ABRIO LA PUERTA");
 	doorOpen = true;
-	servo.write(0);
+	digitalWrite(PIN_DOOR0, HIGH);
+	delay(150);
+	digitalWrite(PIN_DOOR0, LOW);
 }
 
 void Slide::close()
 {
 	Serial.println("SE CERRO LA PUERTA");
 	doorOpen = false;
-	servo.write(100);
-	 
+	digitalWrite(PIN_DOOR1, HIGH);
+	delay(150);
+	digitalWrite(PIN_DOOR1, LOW);
 }
 
 bool Slide::isDoorOpen()
 {
 	return doorOpen;
+}
+
+void Slide::setup()
+{
+	pinMode(PIN_DOOR0, OUTPUT);
+	digitalWrite(PIN_DOOR0, LOW);
+	pinMode(PIN_DOOR1, OUTPUT);
+	digitalWrite(PIN_DOOR1, LOW);
 }

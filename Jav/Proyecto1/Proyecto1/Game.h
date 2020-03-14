@@ -57,6 +57,8 @@ public:
 
 	Game();
 	
+	setup();
+	
 	//Retorna falso si no pudo empezar el nuevo juego, solo se puede empezar un nuevo juego si currState es GAME_OVER
 	bool tryStart();
 	//Retorna si gano, esta jugando, perdio o esta en modo gameover

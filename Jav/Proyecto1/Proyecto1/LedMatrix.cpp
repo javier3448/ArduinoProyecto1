@@ -32,14 +32,14 @@ void LedMatrix::paintSadFace()
 {
 	clear();
 	
-    matrix[0] = 0b00111100;
-    matrix[1] = 0b01000010;
-    matrix[2] = 0b10100101;
-    matrix[3] = 0b10010001;
-    matrix[4] = 0b10010001;
-    matrix[5] = 0b10100101;
-    matrix[6] = 0b10000001;
-    matrix[7] = 0b01111100;
+    matrix[0] = 0b00000000;
+    matrix[1] = 0b00000000;
+    matrix[2] = 0b00100100;
+    matrix[3] = 0b00010000;
+    matrix[4] = 0b00010000;
+    matrix[5] = 0b00100100;
+    matrix[6] = 0b00000000;
+    matrix[7] = 0b00000000;
 	
 	update();
 }

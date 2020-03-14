@@ -7,7 +7,7 @@
 void Game::playTune()
 {
 	tone(22, 32, 500);
-	delay(100);
+	delayMicroseconds(100);
 	tone(22, 32, 500);
 }
 
@@ -151,7 +151,6 @@ byte Game::update(bool _catch, bool drop)
 			Serial.println("WAIT_FOR_PRIZE: ");//debug
 			if(stateStartTime == 0xffffffff){
 				stateStartTime = millis();
-				slide.close();
 			}
 			slide.update();
 			if (!slide.getHadPrize() && slide.getHasPrize()){
@@ -173,5 +172,10 @@ byte Game::update(bool _catch, bool drop)
 		return R_NONE;
 	}
 	//slide.updateServo();//Chapus horrible para el servo
+}
+
+Game::setup()
+{
+	slide.setup();
 }
 

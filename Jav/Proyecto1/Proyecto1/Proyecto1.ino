@@ -74,7 +74,8 @@ int ficha1C = 0;
 int ficha50C = 0;
 int ficha25C = 0;
 double restante = 0;
-double total = 1;//SOLO PARA DEBUGGING. TODO: PONERLO EN 0
+double total = 0
+;//SOLO PARA DEBUGGING. TODO: PONERLO EN 0
 
 byte state = 0;
 //end Raul melyza
@@ -87,8 +88,6 @@ bool isCatchPressed = false;
 
 bool wasDropPressed = false;
 bool isDropPressed = false;
-
-Servo servo = Servo();
 void setup() {
 	Serial.begin(9600);
 	Serial2.begin(38400);
@@ -100,6 +99,7 @@ void setup() {
 	pinMode(PIN_DROP_BTN, INPUT_PULLUP);//My
 	
 	Serial.println("HOLA");
+	game.setup();
 }
 
 void loop() {

@@ -15,13 +15,14 @@
 class Slide
 {
 private:
-	Servo servo;
 	UsSensor usSensor;
 
 	bool hasPrize = false;
 	bool hadPrize = false;
 	bool doorOpen = false;
 	
+	static const byte PIN_DOOR0 = 8;
+	static const byte PIN_DOOR1 = 9;
 	static const unsigned int HAS_PRIZE_DISTANCE = 500;
 	
 	byte servoPin;
@@ -30,8 +31,9 @@ public:
 	//doorPin es basura, no se usa//TODO: QUITAR door
 	Slide(byte hasPrizeEchoPin, byte hasPrizeTriggerPin, byte doorPin);
 	
+	void setup();
+	
 	void update();
-	void updateServo();
 	
 	byte getHasPrize();
 	byte getHadPrize();
