@@ -32,14 +32,14 @@ void LedMatrix::paintSadFace()
 {
 	clear();
 	
-	matrix[0] = 0b00111100;
-	matrix[1] = 0b01000010;
-	matrix[2] = 0b10100101;
-	matrix[3] = 0b10000001;
-	matrix[4] = 0b10011001;
-	matrix[5] = 0b10100101;
-	matrix[6] = 0b10000001;
-	matrix[7] = 0b01111110;
+    matrix[0] = 0b00111100;
+    matrix[1] = 0b01000010;
+    matrix[2] = 0b10100101;
+    matrix[3] = 0b10010001;
+    matrix[4] = 0b10010001;
+    matrix[5] = 0b10100101;
+    matrix[6] = 0b10000001;
+    matrix[7] = 0b01111100;
 	
 	update();
 }
@@ -49,9 +49,10 @@ void LedMatrix::paintDot(byte x, byte y)
 	if(x >= 8 || y >= SIZEOF_MATRIX)
 		return;
 	
+	x = SIZEOF_MATRIX - x - 1;
 	y = SIZEOF_MATRIX - y - 1;
 	
-	matrix[y] |= (1 << x);
+	matrix[x] |= (1 << y);
 	update();
 }
 
@@ -60,8 +61,9 @@ void LedMatrix::clearDot(byte x, byte y)
 	if(x >= 8 || y >= SIZEOF_MATRIX)
 		return;
 	
+	x = SIZEOF_MATRIX - x - 1;
 	y = SIZEOF_MATRIX - y - 1;
 	
-	matrix[y] &= ~(1 << x);
+	matrix[x] &= ~(1 << y);
 	update();
 }

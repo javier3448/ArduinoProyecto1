@@ -245,6 +245,12 @@
     </VisualMicroSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Android.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Android.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Crane.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -255,6 +261,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Game.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="MyArray.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="MyArray.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Slide.cpp">

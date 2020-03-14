@@ -3,10 +3,11 @@
 // 
 
 #include "Crane.h"
+#include "Android.h"
 
 //TODO TESTEAR MUCHISIMO Y LEERLA BIEN BIEN
 
-Crane::Crane(byte xAxisPin, byte yAxisPin, byte hasPrizePin) : PIN_X_AXIS(xAxisPin), PIN_Y_AXIS(yAxisPin) : PIN_HAS_PRIZE(hasPrizePin)
+Crane::Crane(byte yAxisPin, byte xAxisPin, byte hasPrizePin) : PIN_X_AXIS(xAxisPin), PIN_Y_AXIS(yAxisPin) , PIN_HAS_PRIZE(hasPrizePin)
 {
 	XyzEngine::init();
 	currStateStartTime = millis();
@@ -33,33 +34,36 @@ bool Crane::update()
 
 void Crane::updateCurrVelocities()
 {
-	int xAxis = analogRead(PIN_X_AXIS);
-	//if(android.xVelocity != 0){
-		//
-	//}
-	int yAxis = analogRead(PIN_Y_AXIS);
-	//if(android.yVelocity != 0){
-		//
-	//}
+	if(Android::velocityX != 0){
+		currXVelocity = Android::velocityX;
+	}
+	else{
+		int xAxis = analogRead(PIN_X_AXIS);
+		if(xAxis < 256){
+			currXVelocity = -1;
+		}
+		else if(xAxis > 768){
+			currXVelocity = 1;
+		}
+		else{
+			currXVelocity = 0;
+		}		
+	}
 	
-	if(xAxis < 256){
-		currXVelocity = -1;
+	if(Android::velocityY != 0){
+		currYVelocity = Android::velocityY;
 	}
-	else if(xAxis > 768){
-		currXVelocity = 1;
-	}
-	else{
-		currXVelocity = 0;
-	}
-
-	if(yAxis > 768){
-		currYVelocity = -1;
-	}
-	else if(yAxis < 256){
-		currYVelocity = 1;
-	}
-	else{
-		currYVelocity = 0;
+	else{//Invertimos y por como conectamos el joystick
+		int yAxis = analogRead(PIN_Y_AXIS);
+		if(yAxis < 256){
+			currYVelocity = -1;
+		}
+		else if(yAxis > 768){
+			currYVelocity = 1;
+		}
+		else{
+			currYVelocity = 0;
+		}
 	}
 }
 
@@ -140,7 +144,7 @@ bool Crane::updateCatchingPrize()
 	{
 		XyzEngine::zFoward();
 	}
-	else if (millis() - currStateStartTime < LOWERING_TIME * 2)//CONSTANTE QUEMADA
+	else if (millis() - currStateStartTime < LOWERING_TIME * 2 + RISING_TIME_DIFERENCE)//CONSTANTE QUEMADA
 	{
 		XyzEngine::zReverse();
 	}
@@ -319,7 +323,7 @@ byte Crane::getYPos()
 
 bool Crane::hasPrize()
 {	
-	return digitalRead(PIN_HAS_PRIZE);//TODO poner un sensor que determine si tiene o no juguete
+	return !digitalRead(PIN_HAS_PRIZE);//TODO poner un sensor que determine si tiene o no juguete
 }
 
 char Crane::getXVelocity()

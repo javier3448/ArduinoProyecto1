@@ -15,8 +15,6 @@ class Android
  static int velocityX;
  static int velocityY;
 
- void updateAndriod();
-
 };
 
 boolean Android::flagCatch = false;

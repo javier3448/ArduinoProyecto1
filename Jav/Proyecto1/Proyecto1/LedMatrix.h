@@ -8,7 +8,6 @@
 #endif
 
 #include "Max7219Driver.h"
-
 class LedMatrix
 {
 private:

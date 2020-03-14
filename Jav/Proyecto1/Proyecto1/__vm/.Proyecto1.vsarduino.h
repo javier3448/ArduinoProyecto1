@@ -19,7 +19,13 @@
 #define ARDUINO_ARCH_AVR
 //
 //
+void updateGame();
 void updateCatchAndDrop();
+void movesAndroid();
+void updateAndroid(String input);
+MyArray getMoves(String input);
+void countCoins();
+String cadenaFichas(int ingresada);
 
 #include "pins_arduino.h" 
 #include "arduino.h"

@@ -18,19 +18,20 @@ private:
 	Servo servo;
 	UsSensor usSensor;
 
-	byte hasPrizePin;
 	bool hasPrize = false;
 	bool hadPrize = false;
 	bool doorOpen = false;
 	
-	static const unsigned int HAS_PRIZE_DISTANCE = 80;
+	static const unsigned int HAS_PRIZE_DISTANCE = 500;
 	
 	byte servoPin;
 
 public:
+	//doorPin es basura, no se usa//TODO: QUITAR door
 	Slide(byte hasPrizeEchoPin, byte hasPrizeTriggerPin, byte doorPin);
 	
 	void update();
+	void updateServo();
 	
 	byte getHasPrize();
 	byte getHadPrize();
@@ -39,6 +40,9 @@ public:
 	void close();
 	
 	bool isDoorOpen();
+	
+	friend void setup();
+	friend void loop();
 };
 
 #endif

@@ -161,7 +161,10 @@ void countCoins(){
 
 String cadenaFichas(int ingresada){
   String c = "";
-  c+= " ";
+  c+= ingresada;
+  c+= ingresada;
+  c+= ingresada;
+  c+= ingresada;
   c+= ingresada;
   c+= ",1";
   c+= ficha1C;

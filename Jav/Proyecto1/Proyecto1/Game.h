@@ -63,9 +63,8 @@ public:
 	//Recive la entradas analogas DE 10 BITS de los ejes x y y del joystick
 	byte update(bool _catch, bool drop);
 	
-	
-	
-	friend void loop();//Solo para debugging
+	friend void setup();
+	friend void loop();
 	
 };
 

@@ -88,6 +88,9 @@ byte Game::update(bool _catch, bool drop)
 				case Crane::S_CATCHING_PRIZE:
 					Serial.println("CATCHING PRIZE");//debug
 					if(crane.update()){
+						bool hasPrize = crane.hasPrize();
+						Serial.print("************HAS PRIZE: ");
+						Serial.println(hasPrize);
 						if (crane.hasPrize()){
 							currState = S_PLAYING_W_PRIZE;
 							crane.setState(Crane::S_PLAYING);
@@ -114,22 +117,24 @@ byte Game::update(bool _catch, bool drop)
 				crane.setState(Crane::S_DROPING_PRIZE);
 			}
 			printCraneData();
-		return R_PLAYING;;
+		return R_PLAYING;
 		case S_LOSER_RETRIEVING:
 			Serial.println("LOSER_RETRIEVING");//debug
 			if(crane.update()){
 				currState =  S_GAME_OVER;
-				lastResult = R_LOST;
 				ledMatrix.paintSadFace();
+				lastResult = R_LOST;
+				return R_LOST;
 			}
 			printCraneData();
-			
+		return R_NONE;
 		break;
 		case S_WINNER_RETRIEVING:
 			Serial.println("WINNER_RETRIEVING");//debug
 			if(crane.update()){
 				currState =  S_GAME_OVER;
 				lastResult = R_WON;
+				return R_WON;
 			}
 		break;
 		case S_DROPPING:
@@ -167,5 +172,6 @@ byte Game::update(bool _catch, bool drop)
 			}
 		return R_NONE;
 	}
+	//slide.updateServo();//Chapus horrible para el servo
 }
 

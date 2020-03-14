@@ -20,8 +20,8 @@ namespace XyzEngine
 		const byte MOTOR_X2 = 5;
 		const byte MOTOR_Y1 = 2;
 		const byte MOTOR_Y2 = 3;
-		const byte MOTOR_Z1 = 6;
-		const byte MOTOR_Z2 = 7;
+		const byte MOTOR_Z1 = 7;
+		const byte MOTOR_Z2 = 6;
 	}
 
 	extern byte xPower;

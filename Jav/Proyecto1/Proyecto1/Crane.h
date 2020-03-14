@@ -17,10 +17,11 @@ class Crane
  private:
 	//Agregar el sensor de distancia para ver si sostiene premio
  
-	static const unsigned long LOWERING_TIME = 2000;//Tiempo que tarda en bajar la garra, vamos a asumir que es el mismo para subir
-	static const unsigned long DROPING_TIME = 200;//Tiempo que tarda en dejar caer el premio, vamos a asumir que es el mismo para subir
-	static const unsigned long MAX_X_TIME = 2000;//Tiempo que tarda en llegar de 0 x a el tope en x de la garra
-	static const unsigned long MAX_Y_TIME = 2000;//Tiempo que tarda en llegar de 0 x a el tope en x de la garra
+	static const unsigned long LOWERING_TIME = 1500;//Tiempo que tarda en bajar la garra, vamos a asumir que es el mismo para subir
+	static const unsigned long RISING_TIME_DIFERENCE = 0;
+	static const unsigned long DROPING_TIME = 300;//Tiempo que tarda en dejar caer el premio, vamos a asumir que es el mismo para subir
+	static const unsigned long MAX_X_TIME = 4850;//Tiempo que tarda en llegar de 0 x a el tope en x de la garra
+	static const unsigned long MAX_Y_TIME = 4850;//Tiempo que tarda en llegar de 0 x a el tope en x de la garra
 
 //Chapuz deberiamos de manejar el overflow de xTime y yTime en vez de usar una variable que pesa el doble para evitarnos problemas con el unsigned
 
@@ -64,7 +65,7 @@ class Crane
 	const byte PIN_Y_AXIS;
 	const byte PIN_HAS_PRIZE;
  
-	Crane(byte xAxisPin, byte yAxisPin, byte hasPrizePin);
+	Crane(byte yAxisPin, byte xAxisPin, byte hasPrizePin);
 	
 	bool update();//Retorna si el estado que se esta ejecuntando actualmente ha terminado, sirve principalmente para los estados automaticos con un duracion de tiempo previamente establecida
 	
