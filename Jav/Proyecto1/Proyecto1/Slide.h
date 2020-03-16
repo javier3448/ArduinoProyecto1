@@ -21,11 +21,13 @@ private:
 	bool hadPrize = false;
 	bool doorOpen = false;
 	
-	static const byte PIN_DOOR0 = 8;
+	static const byte PIN_DOOR0 = 10;
 	static const byte PIN_DOOR1 = 9;
 	static const unsigned int HAS_PRIZE_DISTANCE = 500;
 	
 	byte servoPin;
+
+	Servo servo;
 
 public:
 	//doorPin es basura, no se usa//TODO: QUITAR door

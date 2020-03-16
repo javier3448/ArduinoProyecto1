@@ -19,7 +19,7 @@ class Crane
  
 	static const unsigned long LOWERING_TIME = 1500;//Tiempo que tarda en bajar la garra, vamos a asumir que es el mismo para subir
 	static const unsigned long RISING_TIME_DIFERENCE = 0;
-	static const unsigned long DROPING_TIME = 300;//Tiempo que tarda en dejar caer el premio, vamos a asumir que es el mismo para subir
+	static const unsigned long DROPING_TIME = 600;//Tiempo que tarda en dejar caer el premio, vamos a asumir que es el mismo para subir
 	static const unsigned long MAX_X_TIME = 4850;//Tiempo que tarda en llegar de 0 x a el tope en x de la garra
 	static const unsigned long MAX_Y_TIME = 4850;//Tiempo que tarda en llegar de 0 x a el tope en x de la garra
 

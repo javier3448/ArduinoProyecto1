@@ -74,8 +74,7 @@ int ficha1C = 0;
 int ficha50C = 0;
 int ficha25C = 0;
 double restante = 0;
-double total = 0
-;//SOLO PARA DEBUGGING. TODO: PONERLO EN 0
+double total = 0;//SOLO PARA DEBUGGING. TODO: PONERLO EN 0
 
 byte state = 0;
 //end Raul melyza
@@ -88,6 +87,7 @@ bool isCatchPressed = false;
 
 bool wasDropPressed = false;
 bool isDropPressed = false;
+
 void setup() {
 	Serial.begin(9600);
 	Serial2.begin(38400);
